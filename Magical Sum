@@ -1,0 +1,100 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    /**
+     * Calculates the sum of array products for all magical sequences.
+     * This method uses dynamic programming to solve the problem.
+     *
+     * The DP state is defined as: dp[j][carry][b], which stores the sum of
+     * product terms (Π nums[i]^c_i / c_i!) where:
+     * - j is the total number of elements used so far.
+     * - carry is the carry-over for the binary sum calculation.
+     * - b is the number of set bits accumulated so far.
+     *
+     * The algorithm iterates through each number in `nums`, updating the DP table
+     * by considering all possible counts for that number.
+     */
+    public int findSumOfArrayProduct(int m, int k, int[] nums) {
+        // Precompute factorials and their modular inverses
+        long[] fact = new long[m + 1];
+        long[] invFact = new long[m + 1];
+        fact[0] = 1;
+        invFact[0] = 1;
+        for (int i = 1; i <= m; i++) {
+            fact[i] = (fact[i - 1] * i) % MOD;
+            invFact[i] = power(fact[i], MOD - 2);
+        }
+
+        // Precompute bit counts for numbers up to m (max possible carry)
+        int[] bitCounts = new int[m + 1];
+        for (int i = 1; i <= m; i++) {
+            bitCounts[i] = bitCounts[i >> 1] + (i & 1);
+        }
+
+        // DP table: dp[j][carry][b]
+        long[][][] dp = new long[m + 1][m + 1][k + 1];
+        dp[0][0][0] = 1; // Base case: 0 elements, 0 carry, 0 bits -> 1 way
+
+        for (int num_val : nums) {
+            long[][][] newDp = new long[m + 1][m + 1][k + 1];
+            
+            // Precompute powers of the current number
+            long[] powers = new long[m + 1];
+            powers[0] = 1;
+            for (int i = 1; i <= m; i++) {
+                powers[i] = (powers[i - 1] * num_val) % MOD;
+            }
+
+            for (int j = 0; j <= m; j++) { // Elements used so far
+                for (int carry = 0; carry <= j; carry++) { // Carry from previous bit (optimized: carry <= j)
+                    for (int b = 0; b <= k; b++) { // Set bits so far
+                        if (dp[j][carry][b] == 0) continue;
+
+                        for (int count = 0; count <= m - j; count++) { // Count for the current number
+                            int newJ = j + count;
+                            int val = count + carry;
+                            int newCarry = val / 2;
+                            int newB = b + (val % 2);
+
+                            if (newB <= k) {
+                                long term = (powers[count] * invFact[count]) % MOD;
+                                long contribution = (dp[j][carry][b] * term) % MOD;
+                                newDp[newJ][newCarry][newB] = (newDp[newJ][newCarry][newB] + contribution) % MOD;
+                            }
+                        }
+                    }
+                }
+            }
+            dp = newDp;
+        }
+
+        long sumOfProdTerms = 0;
+        // After all numbers, sum up results where total elements used is m
+        // and total set bits equals k.
+        for (int carry = 0; carry <= m; carry++) {
+            for (int b = 0; b <= k; b++) {
+                if (dp[m][carry][b] > 0) {
+                    if (b + bitCounts[carry] == k) {
+                        sumOfProdTerms = (sumOfProdTerms + dp[m][carry][b]) % MOD;
+                    }
+                }
+            }
+        }
+
+        // Final result is the sum of terms multiplied by m!
+        long ans = (sumOfProdTerms * fact[m]) % MOD;
+        return (int) ans;
+    }
+
+    // Helper function for modular exponentiation
+    private long power(long base, long exp) {
+        long res = 1;
+        base %= MOD;
+        while (exp > 0) {
+            if (exp % 2 == 1) res = (res * base) % MOD;
+            base = (base * base) % MOD;
+            exp /= 2;
+        }
+        return res;
+    }
+}
