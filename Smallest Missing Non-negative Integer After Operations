@@ -1,0 +1,20 @@
+import java.util.*;
+
+class Solution {
+    public int findSmallestInteger(int[] nums, int value) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int num : nums) {
+            int mod = ((num % value) + value) % value; // normalize modulo to positive
+            freq.put(mod, freq.getOrDefault(mod, 0) + 1);
+        }
+
+        int mex = 0;
+        while (true) {
+            int mod = mex % value;
+            if (!freq.containsKey(mod) || freq.get(mod) == 0)
+                return mex;
+            freq.put(mod, freq.get(mod) - 1);
+            mex++;
+        }
+    }
+}
