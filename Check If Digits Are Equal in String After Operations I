@@ -1,0 +1,20 @@
+#include <string>
+using namespace std;
+
+class Solution {
+public:
+    bool hasSameDigits(string s) {
+        // Keep reducing the string until it has only 2 digits
+        while (s.size() > 2) {
+            string next;
+            for (int i = 0; i < s.size() - 1; ++i) {
+                int a = s[i] - '0';
+                int b = s[i + 1] - '0';
+                next.push_back(((a + b) % 10) + '0');
+            }
+            s = next;
+        }
+        // Check if the final two digits are equal
+        return s[0] == s[1];
+    }
+};
