@@ -1,0 +1,15 @@
+class Solution {
+    public int minNumberOperations(int[] target) {
+        int operations = 0;
+        int previousValue = 0;
+        
+        for (int currentValue : target) {
+            if (currentValue > previousValue) {
+                operations += (currentValue - previousValue);
+            }
+            previousValue = currentValue;
+        }
+        
+        return operations;
+    }
+}
