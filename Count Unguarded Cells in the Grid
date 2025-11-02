@@ -1,0 +1,17 @@
+class Solution {
+    public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
+        int[][] g = new int[m][n]; 
+        for (int[] w : walls) g[w[0]][w[1]] = 2;
+        for (int[] x : guards) g[x[0]][x[1]] = 1;
+        for (int[] x : guards) {
+            int r=x[0],c=x[1];
+            for(int i=r-1;i>=0 && g[i][c]!=2;i--) if(g[i][c]==0) g[i][c]=3; else if(g[i][c]==1) break;
+            for(int i=r+1;i<m && g[i][c]!=2;i++) if(g[i][c]==0) g[i][c]=3; else if(g[i][c]==1) break;
+            for(int j=c-1;j>=0 && g[r][j]!=2;j--) if(g[r][j]==0) g[r][j]=3; else if(g[r][j]==1) break;
+            for(int j=c+1;j<n && g[r][j]!=2;j++) if(g[r][j]==0) g[r][j]=3; else if(g[r][j]==1) break;
+        }
+        int ans=0;
+        for(int i=0;i<m;i++) for(int j=0;j<n;j++) if(g[i][j]==0) ans++;
+        return ans;
+    }
+}
