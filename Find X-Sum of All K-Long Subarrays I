@@ -1,0 +1,41 @@
+class Solution {
+    int calc(HashMap<Integer,Integer> map, int x){
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->{
+            if(a[1]!=b[1]) return b[1]-a[1];
+            return b[0]-a[0];
+        });
+
+        for(var e: map.entrySet()) pq.add(new int[]{e.getKey(), e.getValue()});
+
+        int sum=0;
+        while(x>0 && !pq.isEmpty()){
+            int[] p = pq.poll();
+            sum += (long)p[0]*p[1];
+            x--;
+        }
+        return sum;
+    }
+    public int[] findXSum(int[] nums, int k, int x) {
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        for(int i=0;i<k;i++) map.put(nums[i], map.getOrDefault(nums[i],0)+1);
+
+        ans[0] = calc(map, x);
+
+        for(int i=1;i<=n-k;i++){
+            int out = nums[i-1];
+            int in  = nums[i+k-1];
+
+            map.put(out, map.get(out)-1);
+            if(map.get(out)==0) map.remove(out);
+
+            map.put(in, map.getOrDefault(in,0)+1);
+
+            ans[i] = calc(map, x);
+        }
+        return ans;
+    }
+}
