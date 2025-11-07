@@ -1,0 +1,70 @@
+class Solution {
+    public long maxPower(int[] stations, int r, int k) {
+        int n = stations.length;
+        long[] power = new long[n];
+        long currentWindowSum = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i <= r) {
+                currentWindowSum += stations[i];
+            }
+        }
+        power[0] = currentWindowSum;
+
+        for (int i = 1; i < n; i++) {
+            long add = (i + r < n) ? stations[i + r] : 0;
+            long sub = (i - r - 1 >= 0) ? stations[i - r - 1] : 0;
+            currentWindowSum = currentWindowSum + add - sub;
+            power[i] = currentWindowSum;
+        }
+
+        long low = 0;
+        long high = 1_000_000_000_000_001;
+        long ans = 0;
+
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+            if (isPossible(power, n, r, k, mid)) {
+                ans = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    private boolean isPossible(long[] initialPower, int n, int r, long k, long targetPower) {
+        long[] addedStations = new long[n];
+        long stationsUsed = 0;
+        long additionalPower = 0;
+        
+        long[] power = new long[n];
+        for(int i=0; i<n; i++) {
+            power[i] = initialPower[i];
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (i > 0) {
+                long add = (i + r < n) ? addedStations[i + r] : 0;
+                long sub = (i - r - 1 >= 0) ? addedStations[i - r - 1] : 0;
+                additionalPower = additionalPower + add - sub;
+            }
+            
+            long currentPower = power[i] + additionalPower;
+
+            if (currentPower < targetPower) {
+                long needed = targetPower - currentPower;
+                stationsUsed += needed;
+                if (stationsUsed > k) {
+                    return false;
+                }
+
+                int addAt = Math.min(i + r, n - 1);
+                addedStations[addAt] += needed;
+                additionalPower += needed;
+            }
+        }
+        return true;
+    }
+}
