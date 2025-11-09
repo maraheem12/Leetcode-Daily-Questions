@@ -1,8 +1,8 @@
 #include <string>
 using namespace std;
 
+
 class Solution {
-public:
     bool hasSameDigits(string s) {
         // Keep reducing the string until it has only 2 digits
         while (s.size() > 2) {
