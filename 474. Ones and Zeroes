@@ -8,6 +8,7 @@ class Solution {
                 if (c == '0') mCnt++; 
                 else nCnt++;
             }
+
             
             for (int m = M; m >= mCnt; m--) {
                 for (int n = N; n >= nCnt; n--) {
