@@ -1,0 +1,45 @@
+import java.util.Arrays;
+
+class Solution {
+    public int numberOfSubstrings(String s) {
+        int N = s.length();
+        
+        int[] next_zero = new int[N];
+        Arrays.fill(next_zero, N);
+
+        for (int i = N - 2; i >= 0; i--) {
+            if (s.charAt(i + 1) == '0') {
+                next_zero[i] = i + 1;
+            } else {
+                next_zero[i] = next_zero[i + 1];
+            }
+        }
+
+        int res = 0;
+        for (int l = 0; l < N; l++) {
+            int zeroes = (s.charAt(l) == '0' ? 1 : 0);
+            int r = l; 
+
+            while (zeroes * zeroes <= N) {
+                int next_z = next_zero[r];
+                
+                int ones = next_z - l - zeroes;
+                
+                int k = zeroes * zeroes; 
+
+                if (ones >= k) {
+                    res += Math.min(next_z - r, ones - k + 1);
+                }
+
+                r = next_z;
+                zeroes++; 
+                
+                if (r == N) {
+                    break;
+                }
+            }
+        }
+        
+        return res;
+    }
+}
