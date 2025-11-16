@@ -1,0 +1,17 @@
+class Solution {
+    public int numSub(String s) {
+        int result = 0;
+        int consecutive = 0;
+        int MOD = 1000000007;
+        for(char c: s.toCharArray()){
+            if(c == '1'){
+                consecutive++;
+                result = (result + consecutive)%MOD;
+            }
+            else{
+                consecutive = 0;
+            }
+        }
+        return result;
+    }
+}
