@@ -1,0 +1,31 @@
+class Solution {
+    public List<Boolean> prefixesDivBy5(int[] nums) {
+        List<Boolean> res = new ArrayList<>();
+        int rem = 0;
+        
+        for (int bit : nums) {
+            rem = ((rem << 1) + bit) % 5;
+            res.add(rem == 0);
+        }
+        return res;
+    }
+}
+
+
+/*
+StringBuilder bits = new StringBuilder();
+        int n = nums.length;
+        ArrayList<Boolean> result = new ArrayList<>();
+        int num = 0;
+        for(int i=0; i<n; i++){
+            bits.append(nums[i]);
+            num = Integer.parseInt(bits.toString(), 2);
+            if(num % 5 == 0){
+                result.add(true);
+            }
+            else{
+                result.add(false);
+            }
+        }
+        return result;
+*/
