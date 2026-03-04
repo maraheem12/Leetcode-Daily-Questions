@@ -1,0 +1,40 @@
+class Solution {
+    public int numSpecial(int[][] mat) {
+        
+        int r = mat.length;
+        int c = mat[0].length;
+        int count=0;
+        int rows[] = new int[r];
+        int cols[] = new int[c];
+
+        for(int i=0; i<r; i++){
+            int ones = 0;
+            for(int j=0; j<c; j++){
+                if(mat[i][j] == 1){
+                    ones++;
+                }
+            }
+            rows[i] = ones;
+        }
+        for(int j=0; j<c; j++){
+            int ones = 0;
+            for(int i=0; i<r; i++){
+                if(mat[i][j] == 1){
+                    ones++;
+                }
+            }
+            cols[j] = ones;
+        }
+        for(int i=0; i<r; i++){
+            for(int j=0; j<c; j++){
+                if(mat[i][j] == 1){
+                    if(rows[i] == 1 && cols[j]==1){
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+
+    }
+}
