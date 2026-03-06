@@ -1,0 +1,22 @@
+class Solution {
+    public boolean checkOnesSegment(String s) {
+        int n = s.length();
+        if(n==1){
+            return (s.charAt(0) == '1')? true : false;
+        }
+        int m=0;
+        for(int i=0; i<n; i++){
+            if(s.charAt(i) == '0'){
+                m = i+1;
+                break;
+            }
+        }
+        if(m==0) return true;
+        for(int i=m; i<n; i++){
+            if(s.charAt(i) == '1'){
+                return false;
+            }
+        }
+        return true;
+    }
+}
