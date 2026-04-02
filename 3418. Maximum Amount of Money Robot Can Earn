@@ -1,0 +1,123 @@
+import java.util.*;
+
+class Solution {
+
+    public int coin(int[][] coins, int i, int j, int m, int n, int neutral, int[][][] dp) {
+
+        if (i >= m || j >= n) return Integer.MIN_VALUE;
+
+        if (i == m - 1 && j == n - 1) {
+            if (coins[i][j] < 0 && neutral > 0) return 0;
+            return coins[i][j];
+        }
+
+        if (dp[i][j][neutral] != Integer.MIN_VALUE) {
+            return dp[i][j][neutral];
+        }
+
+        int val;
+
+        if (coins[i][j] < 0) {
+            // Option 1: take negative
+            int take = coins[i][j] + Math.max(
+                    coin(coins, i + 1, j, m, n, neutral, dp),
+                    coin(coins, i, j + 1, m, n, neutral, dp)
+            );
+
+            // Option 2: skip using neutral
+            int skip = Integer.MIN_VALUE;
+            if (neutral > 0) {
+                skip = Math.max(
+                        coin(coins, i + 1, j, m, n, neutral - 1, dp),
+                        coin(coins, i, j + 1, m, n, neutral - 1, dp)
+                );
+            }
+
+            val = Math.max(take, skip);
+
+        } else {
+            val = coins[i][j] + Math.max(
+                    coin(coins, i + 1, j, m, n, neutral, dp),
+                    coin(coins, i, j + 1, m, n, neutral, dp)
+            );
+        }
+
+        return dp[i][j][neutral] = val;
+    }
+
+    public int maximumAmount(int[][] coins) {
+        int m = coins.length;
+        int n = coins[0].length;
+
+        int[][][] dp = new int[m][n][3];
+
+        for (int[][] layer : dp) {
+            for (int[] row : layer) {
+                Arrays.fill(row, Integer.MIN_VALUE);
+            }
+        }
+
+        return coin(coins, 0, 0, m, n, 2, dp);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// class Solution {
+//     int neutral;
+//     int max;
+//     public int coin(int coins[][], int i, int j, int m, int n, int curr, int dp[][]){
+//         if(i == m || j == n){
+//             return curr;
+//         }
+//         if(dp[i][j] != -1){
+//             return dp[i][j];
+//         }
+//         if(coins[i][j] < 0){
+//             if(neutral <= 0){
+//                 curr += coins[i][j];
+//             }
+//             neutral--;
+//         }
+//         else{
+//             curr += coins[i][j];
+//         }
+//         int left = coin(coins, i, j+1, m, n, curr, dp);
+//         int right = coin(coins, i+1, j, m, n, curr, dp);
+//         max = Math.max(left, right);
+//         return dp[i][j] = max;
+//     }
+
+//     public int maximumAmount(int[][] coins) {
+//         max = Integer.MIN_VALUE;
+//         neutral =2;
+//         int m = coins.length;
+//         int n = coins[0].length;
+//         int dp[][] = new int[m+1][n+1];
+//         for(int i[]: dp){
+//             Arrays.fill(i, -1);
+//         }
+//         coin(coins, 0, 0, m, n, 0, dp);
+//         return dp[m-1][n-1];
+//     }
+// }
