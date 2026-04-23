@@ -1,0 +1,28 @@
+class Solution {
+    int compute(int nums[], HashMap<Integer, List<Integer>> map, int i){
+        int target = nums[i];
+        List<Integer> list = map.get(target);
+        int count=0;
+        for(int idx: list){ 
+            count += Math.abs(idx - i);
+        }
+        return count;
+    }
+    public long[] distance(int[] nums) {
+        int n = nums.length;
+        long arr[] = new long[n];
+        HashMap<Integer, List<Integer>> map = new HashMap<>();
+        HashMap<Integer, Integer> prefix = new HashMap<>();
+        for(int i=0; i<n; i++){
+            map.putIfAbsent(nums[i], new ArrayList<>());
+            map.get(nums[i]).add(i);
+        }   
+        for(int i=0; i<n; i++){
+            if(!prefix.contains(nums[i])){
+                arr[i] = compute(nums, map, i);
+            }
+            arr[i] = prefix.get(nums[i])
+        } 
+        return arr;
+    }
+}
