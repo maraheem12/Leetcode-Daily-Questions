@@ -1,0 +1,21 @@
+class Solution {
+    static Boolean subset(int nums[], int k, int idx, Boolean dp[][]){
+        if(k == 0) return true;
+        if(idx < 0) return false;
+        if(dp[idx][k] != null) return dp[idx][k];
+        
+        boolean take = false;
+        if(nums[idx] <= k){
+            take = subset(nums, k - nums[idx], idx-1, dp);
+        }
+        boolean notTake = subset(nums, k, idx-1, dp);
+        
+        return dp[idx][k] = take || notTake;
+        
+    }
+    static Boolean isSubsetSum(int arr[], int sum) {
+        int n = arr.length;
+        Boolean dp[][] = new Boolean[n+1][sum+1];
+        return subset(arr, sum, n-1, dp);
+    }
+}
